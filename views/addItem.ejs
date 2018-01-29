@@ -1,0 +1,45 @@
+<% include partials/head.ejs %>
+<div class="container">
+  <form method="post" action="/additem">
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input name="name" class="form-control" type="text" />
+    </div>
+    <div class="form-group">
+      <label for="store">Store:</label>
+      <input name="store" class="form-control" type="text" />
+    </div>
+    <div class="form-group">
+      <label for="pricedate">Date of Price:</label>
+      <input name="pricedate" class="form-control" type="date" />
+    </div>
+    <div class="form-group">
+      <label for="category">Main Category</label>
+      <input name="category" class="form-control" type="text" />
+    </div>
+    <div class="form-group">
+      <label for="subategory">Sub Category</label>
+      <input name="subcategory" class="form-control" type="text" />
+    </div>
+    <div class="form-group">
+      <label for="cost">Item Cost</label>
+      <input name="cost" class="form-control" type="number" step=".01" />
+    </div>
+    <div class="form-group">
+      <label for="amount">Units</label>
+      <input name="amount" class="form-control" type="number" />
+      <small id="amountHelp" class="form-text text-muted">This is the amount of item in package.</small>
+    </div>
+    <div class="form-group">
+      <label for="unitMeasure">Unit of Measure</label>
+      <input name="unitMeasure" class="form-control" type="text" />
+      <small id="unitMeaserHelp" class="form-text text-muted">oz, lbs, ea, etc.</small>
+    </div>
+      <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+</div>
+<script>
+
+</script>
+<% include partials/foot.ejs %>
