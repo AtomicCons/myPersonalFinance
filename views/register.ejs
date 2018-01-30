@@ -1,9 +1,27 @@
 <% include partials/head.ejs %>
 
-
 <form action="/register" method="post">
 <div class="container">
   <div class="form-group">
+    <% if (errors !== undefined){ %>
+
+      <h3 class = 'alert alert-warning'>PLEASE CORRECT THE ERRORS AND RESUBMIT</h3>
+      <div class="error-container">
+      <ul class="errors">
+      <% for (const error of errors){ %>
+        <li>
+          <%= error.param %>
+          :
+          <%= error.msg %>
+        </li>
+      <% } %>
+      </ul>
+    <% } else{ %>
+
+    <%}%>
+
+
+
     <label for="username">Username</label>
     <input type="text" class="form-control" name="username" />
     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>

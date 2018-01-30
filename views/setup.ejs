@@ -1,0 +1,35 @@
+<% include partials/head.ejs %>
+<form method="post" action="/register">
+  <div class="container">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" required class="form-control" name="username" value="<%=username%>" />
+
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" required class="form-control" name="password" value="<%=password%>" />
+    </div>
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input type="text" class="form-control" name="firstName" />
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name</label>
+      <input type="text" class="form-control" name="lastName" />
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" name="email" />
+      <small class="form-text text-muted"> This is not required. But if not provided, we cannot reset your password</small>
+    </div>
+    <div class="form-group">
+      <button id="submit" type="submit" class="btn btn-primary">Complete Registration</button>
+    </div>
+
+  </div>
+  </div>
+</form>
+
+<!--need to throw in if username is email, fill in email  -->
+  <% include partials/foot.ejs %>

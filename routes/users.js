@@ -6,16 +6,20 @@ router.get('/login', function(req, res, next){
   res.render('login');
 });
 router.get('/register', function(req, res){
-  res.render('register');
+  res.render('register',{ errors: req.session.errors,
+                          success: req.session.success,
+                          exists: req.session.exists});
+                          console.log(errors);
 })
 router.post('/register', function(req, res, next){
   req.assert('username', 'Please choose a longer username').len(4,25);
-  req.assert('password', 'This should be longer.. up to 100 characters').len(12,100);
+  req.assert('password', 'This should be longer. 12 to 100 characters').len(12,100);
   req.getValidationResult().then(function(result){
     if(!result.isEmpty()){
       var errors = result.array();
       req.session.errors = errors;
       req.session.success = false;
+      console.log(errors)
       res.render('register', { errors: req.session.errors,
                                 success: req.session.success,
                                 exists: req.session.exists});
