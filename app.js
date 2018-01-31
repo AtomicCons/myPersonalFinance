@@ -2,7 +2,7 @@ var express       = require('express');
     path          = require('path'),
     favicon       = require('serve-favicon'),
     logger        = require('morgan'),
-    cookieParser  = require('cookie-parser'),
+    // cookieParser  = require('cookie-parser'),
     mongoose      = require('mongoose'),
     expressSession = require('express-session'),
     expressValidator = require('express-validator'),
@@ -29,16 +29,20 @@ app.use(logger('dev'));
 app.use(expressValidator());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(expressSession({
   secret: 'this will be changed later',
   resave: false,
   saveUninitialized: true,
   // cookie: {secure: true}, enable on https
   cookie: {maxAge: 600}
-
-
 }))
+// app.use(expressSession({
+//   genid: function(req){
+//     return genuuid()
+//   },
+//   secret: 'change this later'
+// }))
 app.use(express.static(path.join(__dirname, 'public')));
 //routes used from export
 app.use(landing);
