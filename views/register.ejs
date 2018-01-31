@@ -10,14 +10,18 @@
       <ul class="errors">
       <% for (const error of errors){ %>
         <li>
-          <%= error.param %>
-          :
           <%= error.msg %>
         </li>
-      <% } %>
-      </ul>
-    <% } else{ %>
 
+      <% } %>
+      <%if(exists == true){%>
+      <li>
+        Username is already taken
+      </li>
+      <%}%>
+      </ul>
+    <% } else if(exists == 'true'){ %>
+        <h2 class="alert alert-warning">Please choose another username</h2>
     <%}%>
 
 
