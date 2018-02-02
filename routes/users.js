@@ -6,8 +6,6 @@ router.get('/login', function(req, res, next) {
   res.render('login');
 });
 router.get('/register', function(req, res) {
-  console.log('Session ID: ', req.sessionID);
-  console.log('Session: ', req.session);
   res.render('register', {
     errors: req.session.errors,
     success: req.session.success,
@@ -26,7 +24,7 @@ router.post('/register', function(req, res, next) {
       req.session.errors = errors;
       req.session.success = false;
       User.findOne({username: username}, function(err, user, next){
-        console.log(user)
+        console.log(user)//returns null if empty
         if (user) {
           req.session.exists = true
         }})
@@ -43,6 +41,7 @@ router.post('/register', function(req, res, next) {
         username: username
       }, function(err, user, next) {
         if (user) {
+          console.log('user exists')
           req.session.exists = true;
           res.render('register', {
             errors: req.session.errors,
@@ -66,28 +65,35 @@ router.post('/register', function(req, res, next) {
 router.post('/setup', function(req, res, next) {
   console.log(req.body.username + ":" + req.body.vusername)
     console.log(req.body.password + ":" + req.body.vpassword)
+
   if (req.body.username !== req.body.vusername || req.body.password !== req.body.vpassword) {
     res.send('You have tried to make innapropirate changes')
-  }
-
+  };
+  User.findOne({username:req.body.username}, function(err, user, next){
+      if(user){
+        res.send('You have tried to make innapropirate changes')
+      } else{}
+  });
+  console.log('moving on..')
   req.assert('username', 'Username: Please choose a longer username').len(4, 25);
   req.assert('password', 'Password: This should be a bit longer. 12 to 100 characters').len(12, 100);
   req.getValidationResult().then(function(result) {
+    //if result is not empty, something was changed
     if (!result.isEmpty()) {
+      var errors = result.array();
       req.session.errors = errors;
       req.session.success = false;
-      User.findOne({username: username}, function(err, user, next){
-        if (user) {
-          req.session.exists = true
-          res.render('setup', {
+  } else {
+    User.create(req.body, function(err, data, next){
+      if(err){
+        console.log(err);
+        res.redirect('/')
+      } else {
+        console.log(data);
+        res.send('added')
+      }
+    })
 
-          })
-        } else{
-          res.send('this will register user')
-        }
-
-
-      });
   }
   })
 
