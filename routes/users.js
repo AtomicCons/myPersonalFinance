@@ -3,7 +3,7 @@ var router = express.Router();
 var User = require('../models/user.js');
 /* GET users listing. */
 router.get('/login', function(req, res, next) {
-  res.render('login');
+  res.render('login', {msg: 'Please Login'});
 });
 router.get('/register', function(req, res) {
   res.render('register', {
@@ -90,7 +90,7 @@ router.post('/setup', function(req, res, next) {
         res.redirect('/')
       } else {
         console.log(data);
-        res.send('added')
+        res.render('/login', {msg: 'Registration Complete. Please login.'})
       }
     })
 
