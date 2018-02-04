@@ -4,23 +4,28 @@ var express       = require('express');
     logger        = require('morgan'),
     cookieParser  = require('cookie-parser'),
     mongoose      = require('mongoose'),
+    passport      = require('passport'),
+    LocalStrategy = require('passport-local').Strategy,
+    bodyParser    = require('body-parser'),
     expressSession = require('express-session'),
-    expressValidator = require('express-validator'),
-    bodyParser    = require('body-parser');
+    expressValidator = require('express-validator');
 
 //models imported
 var User = require('./models/user.js');
+//middleware imported
+var passportAuth = require('./middleware/passportAuth.js');
 
 //routes imported
 var landing = require('./routes/landing');
-var userPages = require('./routes/users');
+var routeRegister = require('./routes/register');
+var routeLogin = require('./routes/login');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-
 app.set('view engine', 'ejs');
+//set mongoose conenction
 mongoose.connect("mongodb://localhost/myfinance", {
 });
 // uncomment after placing your favicon in /public
@@ -37,16 +42,14 @@ app.use(expressSession({
   cookie: {secure: false}, //set to true  on https
   cookie: {maxAge: 600}
 }))
-// app.use(expressSession({
-//   genid: function(req){
-//     return genuuid()
-//   },
-//   secret: 'change this later'
-// }))
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passportAuth);
 app.use(express.static(path.join(__dirname, 'public')));
 //routes used from export
 app.use(landing);
-app.use(userPages);
+app.use(routeRegister);
+app.use(routeLogin);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
