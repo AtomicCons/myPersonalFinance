@@ -4,7 +4,7 @@ var User = require('../models/user.js');
 // /Registration routes
 
 router.get('/register', function(req, res) {
-  res.render('register', {
+  res.render('./registration/register', {
     errors: req.session.errors,
     success: req.session.success,
     exists: req.session.exists
@@ -26,7 +26,7 @@ router.post('/register', function(req, res, next) {
         if (user) {
           req.session.exists = true
         }})
-        res.render('register', {
+        res.render('./registration/register', {
           errors: req.session.errors,
           success: req.session.success,
           exists: req.session.exists
@@ -39,16 +39,17 @@ router.post('/register', function(req, res, next) {
         username: username
       }, function(err, user, next) {
         if (user) {
+          console.log(user)
           console.log('user exists')
           req.session.exists = true;
-          res.render('register', {
+          res.render('./registration/register', {
             errors: req.session.errors,
             success: req.session.success,
             exists: req.session.exists
           })
         } else if (!user) {
           var setupU = req.session.setup;
-          res.render('setup', {
+          res.render('./registration/setup', {
             username: username,
             vusername: username,
             password: req.body.password,
@@ -82,15 +83,41 @@ router.post('/setup', function(req, res, next) {
       req.session.errors = errors;
       req.session.success = false;
   } else {
-    User.create(req.body, function(err, data, next){
+    User.register(new User({
+      username: req.body.username,
+      first_name: req.body.firstName,
+      last_name: req.body.lastName,
+      email: req.body.email
+    }), req.body.password, function(err, user){
       if(err){
-        console.log(err);
-        res.redirect('/')
-      } else {
-        console.log(data);
-        res.render('/login', {msg: 'Registration Complete. Please login.'})
+        console.log(err)
+        res.send(err)
       }
+      passport.authenticate("local")(req, res, function(){
+        res.redirect('/profile')
+      })
+      // var authenticate = User.authenticate();
+      // authenticate('username', 'password', function(err,result){
+      //   if(err){
+      //     res.send(err)
+      //   } else{
+      //     console.log(result);
+      //     res.render('/profile')
+      //   }
+      // })
     })
+
+
+
+    // User.create(req.body, function(err, data, next){
+    //   if(err){
+    //     console.log(err);
+    //     res.redirect('/')
+    //   } else {
+    //     console.log(data);
+    //     res.render('/login', {msg: 'Registration Complete. Please login.'})
+    //   }
+    // })
 
   }
   })

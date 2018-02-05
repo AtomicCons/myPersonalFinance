@@ -1,4 +1,5 @@
 var express       = require('express');
+    app           = express();
     path          = require('path'),
     favicon       = require('serve-favicon'),
     logger        = require('morgan'),
@@ -9,18 +10,25 @@ var express       = require('express');
     bodyParser    = require('body-parser'),
     expressSession = require('express-session'),
     expressValidator = require('express-validator');
+    passportLocalMongoose = require('passport-local-mongoose');
 
 //models imported
 var User = require('./models/user.js');
 //middleware imported
-var passportAuth = require('./middleware/passportAuth.js');
+// var passportAuth = require('./middleware/passportAuth.js');
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 //routes imported
 var landing = require('./routes/landing');
 var routeRegister = require('./routes/register');
 var routeLogin = require('./routes/login');
+app.use(passport.initialize());
+app.use(passport.session());
+// app.use(passportAuth);
 
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -42,9 +50,7 @@ app.use(expressSession({
   cookie: {secure: false}, //set to true  on https
   cookie: {maxAge: 600}
 }))
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(passportAuth);
+
 app.use(express.static(path.join(__dirname, 'public')));
 //routes used from export
 app.use(landing);
