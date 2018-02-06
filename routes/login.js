@@ -4,7 +4,10 @@ var User = require('../models/user.js');
 var passport = require('passport')
     , LocalStrategy = require('passport-local').Strategy;
 
-/* GET home page. */
+router.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+})
 router.get('/login', function(req, res, next) {
   res.render('login', {msg: 'Please Login',
                       });
@@ -12,9 +15,9 @@ router.get('/login', function(req, res, next) {
 
 router.post('/login', passport.authenticate('local', {
   failureRedirect: '/login',
-  failureFlash: 'Login Failed'
+  failureFlash: 'Login Failed',
+  successRedirect: '/dashboard'
 }), function(req, res){
-  console.log('user', req.user);
-  res.redirect('/dashboard')
+
 });
 module.exports = router;

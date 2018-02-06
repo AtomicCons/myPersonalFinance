@@ -21,16 +21,19 @@ router.post('/register', function(req, res, next) {
       var errors = result.array();
       req.session.errors = errors;
       req.session.success = false;
-      User.findOne({username: username}, function(err, user, next){
-        console.log(user)//returns null if empty
+      User.findOne({
+        username: username
+      }, function(err, user, next) {
+        console.log(user) //returns null if empty
         if (user) {
           req.session.exists = true
-        }})
-        res.render('./registration/register', {
-          errors: req.session.errors,
-          success: req.session.success,
-          exists: req.session.exists
-        });
+        }
+      })
+      res.render('./registration/register', {
+        errors: req.session.errors,
+        success: req.session.success,
+        exists: req.session.exists
+      });
     } else {
       req.session.success = true;
 
@@ -39,8 +42,6 @@ router.post('/register', function(req, res, next) {
         username: username
       }, function(err, user, next) {
         if (user) {
-          console.log(user)
-          console.log('user exists')
           req.session.exists = true;
           res.render('./registration/register', {
             errors: req.session.errors,
@@ -54,7 +55,7 @@ router.post('/register', function(req, res, next) {
             vusername: username,
             password: req.body.password,
             vpassword: req.body.vpassword
-          } )
+          })
         }
       })
     }
@@ -63,15 +64,17 @@ router.post('/register', function(req, res, next) {
 })
 router.post('/setup', function(req, res, next) {
   console.log(req.body.username + ":" + req.body.vusername)
-    console.log(req.body.password + ":" + req.body.vpassword)
+  console.log(req.body.password + ":" + req.body.vpassword)
 
   if (req.body.username !== req.body.vusername || req.body.password !== req.body.vpassword) {
     res.send('You have tried to make innapropirate changes')
   };
-  User.findOne({username:req.body.username}, function(err, user, next){
-      if(user){
-        res.send('You have tried to make innapropirate changes')
-      } else{}
+  User.findOne({
+    username: req.body.username
+  }, function(err, user, next) {
+    if (user) {
+      res.send('You have tried to make innapropirate changes')
+    } else {}
   });
   console.log('moving on..')
   req.assert('username', 'Username: Please choose a longer username').len(4, 25);
@@ -82,44 +85,24 @@ router.post('/setup', function(req, res, next) {
       var errors = result.array();
       req.session.errors = errors;
       req.session.success = false;
-  } else {
-    User.register(new User({
-      username: req.body.username,
-      first_name: req.body.firstName,
-      last_name: req.body.lastName,
-      email: req.body.email
-    }), req.body.password, function(err, user){
-      if(err){
-        console.log(err)
-        res.send(err)
-      }
-      passport.authenticate("local")(req, res, function(){
-        res.redirect('/profile')
+    } else {
+      User.register(new User({
+        username: req.body.username,
+        first_name: req.body.firstName,
+        last_name: req.body.lastName,
+        email: req.body.email
+      }), req.body.password, function(err, user) {
+        if (err) {
+          console.log(err)
+          res.send(err)
+        }
+        passport.authenticate("local")(req, res, function() {
+          res.redirect('/dashboard')
+        })
+
       })
-      // var authenticate = User.authenticate();
-      // authenticate('username', 'password', function(err,result){
-      //   if(err){
-      //     res.send(err)
-      //   } else{
-      //     console.log(result);
-      //     res.render('/profile')
-      //   }
-      // })
-    })
 
-
-
-    // User.create(req.body, function(err, data, next){
-    //   if(err){
-    //     console.log(err);
-    //     res.redirect('/')
-    //   } else {
-    //     console.log(data);
-    //     res.render('/login', {msg: 'Registration Complete. Please login.'})
-    //   }
-    // })
-
-  }
+    }
   })
 
 })
