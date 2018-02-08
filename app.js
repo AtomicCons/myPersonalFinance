@@ -11,6 +11,7 @@ var express       = require('express'),
     LocalStrategy = require('passport-local').Strategy,
     bodyParser    = require('body-parser'),
     expressSession = require('express-session'),
+    MongoStore    = require('connect-mongo')(expressSession),
     expressValidator = require('express-validator'),
     passportLocalMongoose = require('passport-local-mongoose');
 
@@ -23,8 +24,8 @@ var User = require('./models/user.js');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 //set mongoose conenction
-mongoose.connect("mongodb://localhost/myfinance", {
-});
+mongoose.connect("mongodb://localhost/myfinance");
+var db = mongoose.connection;
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.set('trust proxy', 1)
@@ -35,10 +36,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(expressSession({
   secret: 'this will be changed later',
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   cookie: {secure: false}, //set to true  on https
-  cookie: {maxAge: 600}
+  cookie: {maxAge: 600},
+  store: new MongoStore({
+    mongooseConnection: db
+  })
 }))
 // var passportAuth = require('./middleware/passportAuth.js');
 app.use(passport.initialize());
