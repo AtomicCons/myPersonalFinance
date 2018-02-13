@@ -2,16 +2,17 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/user.js');
 
-router.get('/dashboard', isLoggedIn, function(req, res){
+router.get('/dashboard', function(req, res, next){
+  User.findById(req.session.userId).exec(function(error, user){
+    if(error){
+      return next(error);
+    } else {
+      return res.json({name: user.name, username: user.name})
+    }
+  })
  res.render('./menus/dashboard')
 })
 
-function isLoggedIn(req, res, next){
-  if(req.isAuthenticated()){
-    return next();
-  }
-  res.redirect('/')
-}
 
 router.get('/session', function(req, res, next) {
   console.log(req.session.views)

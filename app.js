@@ -6,14 +6,12 @@ var express       = require('express'),
     favicon       = require('serve-favicon'),
     logger        = require('morgan'),
     cookieParser  = require('cookie-parser'),
+    bcrypt        = require('bcrypt'),
     mongoose      = require('mongoose'),
-    passport      = require('passport'),
-    LocalStrategy = require('passport-local').Strategy,
     bodyParser    = require('body-parser'),
-    expressSession = require('express-session'),
-    MongoStore    = require('connect-mongo')(expressSession),
     expressValidator = require('express-validator'),
-    passportLocalMongoose = require('passport-local-mongoose');
+    expressSession = require('express-session'),
+    MongoStore    = require('connect-mongo')(expressSession);
 
 //models imported
 var User = require('./models/user.js');
@@ -44,12 +42,7 @@ app.use(expressSession({
     mongooseConnection: db
   })
 }))
-// var passportAuth = require('./middleware/passportAuth.js');
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 //routes used from export

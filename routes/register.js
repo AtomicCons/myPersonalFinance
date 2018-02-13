@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var User = require('../models/user.js');
+var express = require('express'),
+    router = express.Router(),
+    bcrypt = require('bcrypt'),
+    expressValidator = require('express-validator'),
+    User = require('../models/user.js');
 // /Registration routes
 
 router.get('/register', function(req, res) {
@@ -87,22 +88,21 @@ router.post('/setup', function(req, res, next) {
       req.session.errors = errors;
       req.session.success = false;
     } else {
-      User.register(new User({
+      var userData = {
+        email: req.body.email,
         username: req.body.username,
+        password: req.body.password,
         first_name: req.body.firstName,
         last_name: req.body.lastName,
-        email: req.body.email
-      }), req.body.password, function(err, user) {
-        if (err) {
-          console.log(err)
-          res.send(err)
+      }
+      User.create(userData, function(error, user){
+        if (error) {
+          return next(error);
+        } else {
+          req.session.userId = user._id;
+          return res.redirect('/dashboard');
         }
-        passport.authenticate("local")(req, res, function() {
-          res.redirect('/dashboard')
-        })
-
       })
-
     }
   })
 
